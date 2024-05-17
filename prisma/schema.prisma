@@ -1,0 +1,31 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider             = "prisma-client-py"
+    recursive_type_depth = 5
+}
+
+model User {
+    cuid       String   @id @default(cuid())
+    name       String
+    email      String   @unique
+    password   String
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+    Order      Order[]
+}
+
+model Order {
+    id          Int      @id @default(autoincrement())
+    name        String
+    description String
+    price       Float
+    quantity    Int
+    User        User     @relation(fields: [userCuid], references: [cuid])
+    userCuid    String
+    created_at  DateTime @default(now())
+    updated_at  DateTime @updatedAt
+}
